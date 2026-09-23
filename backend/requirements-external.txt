@@ -1,0 +1,2 @@
+-r requirements.txt
+humanize-ai-text==1.0.1

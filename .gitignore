@@ -1,0 +1,44 @@
+# Python cache & virtual environments
+__pycache__/
+.pytest_cache/
+*.py[cod]
+backend/Include/
+backend/Lib/
+backend/Scripts/
+backend/pyvenv.cfg
+venv/
+.venv/
+env/
+
+# Databases & local state
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Environment files & Secrets (Strictly block all variants)
+.env
+.env.*
+*.env
+*.env.local
+*.env.*.local
+backend/.env
+backend/.env.*
+dashboard/.env
+dashboard/.env.local
+dashboard/.env.*.local
+
+# Node & Next.js build
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Credentials & Certificates
+*.pem
+*.key
+*.cert
+*.pfx

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { font-synthesis: none; }
+html, body { min-height: 100%; }
+body { background: #F7F9FC; color: #14243D; -webkit-font-smoothing: antialiased; }
+button:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid #93b4ff; outline-offset: 3px; }
+textarea { resize: vertical; }
+.monaco-container .monaco-editor, .monaco-container .overflow-guard { border-radius: 12px; }
