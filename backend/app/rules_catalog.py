@@ -3,10 +3,11 @@ import re
 from functools import lru_cache
 from .config import RULEBOOK
 
-# Only rules with a real, narrowly scoped automatic implementation are listed.
+# Only rules with a real, automated implementation are listed.
 AUTOMATED_RULES = {
-    'R002', 'R003', 'R004', 'R005', 'R009', 'R019', 'R048',
-    'R050', 'R056', 'R071', 'R086', 'R093', 'R095', 'R096', 'R100',
+    'R001', 'R002', 'R003', 'R004', 'R005', 'R006', 'R007', 'R008', 'R009',
+    'R011', 'R014', 'R015', 'R016', 'R019', 'R048', 'R050', 'R056',
+    'R071', 'R086', 'R093', 'R094', 'R095', 'R096', 'R097', 'R099', 'R100',
 }
 
 @lru_cache(maxsize=1)

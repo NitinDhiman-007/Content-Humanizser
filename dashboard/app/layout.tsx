@@ -1,20 +1,58 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import Link from 'next/link';
-import { Layers3 } from 'lucide-react';
+import { Syne, DM_Sans, Space_Mono } from 'next/font/google';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import './globals.css';
-export const metadata: Metadata = { title: 'Content Humanizer', description: 'Local editorial workspace and structured review dashboard' };
-export default function RootLayout({ children }: Readonly<{children: ReactNode}>) {
-  return <html lang="en"><body className="min-h-screen">
-    <header className="border-b border-outline bg-white/95">
-      <div className="mx-auto flex h-[74px] max-w-[1480px] items-center justify-between px-5 sm:px-8">
-        <Link href="/" aria-label="Content Humanizer home" className="flex items-center gap-3 font-semibold tracking-tight text-ink">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-white"><Layers3 size={21}/></span>
-          <span className="text-[17px]">Content Humanizer<span className="ml-2 rounded-md bg-slate-100 px-1.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted">Studio</span></span>
-        </Link>
-        <span className="hidden text-xs font-medium tracking-wide text-muted sm:block">EDITORIAL WORKSPACE</span>
-      </div>
-    </header>
-    {children}
-  </body></html>;
+
+const syne = Syne({
+  subsets: ['latin'],
+  weight: ['700', '800'],
+  variable: '--font-syne',
+  display: 'swap',
+});
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-dm-sans',
+  display: 'swap',
+});
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-space-mono',
+  display: 'swap',
+});
+
+export const metadata: Metadata = {
+  title: 'Content Humanizer Studio | TechMarketing.AI',
+  description:
+    'Engineering brand identities for growth in the AI era. Strategic logic meets creative precision — transforming AI drafts into high-converting, human editorial prose.',
+  keywords: [
+    'TechMarketing.AI',
+    'Content Humanizer',
+    'AI Detector Bypass',
+    'ZeroGPT Humanizer',
+    'Editorial Automation',
+    'Brand Strategy',
+  ],
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
+  return (
+    <html
+      lang="en"
+      className={`${syne.variable} ${dmSans.variable} ${spaceMono.variable}`}
+    >
+      <body className="min-h-screen bg-brand-parchment text-brand-ink flex flex-col font-sans antialiased circuit-grid">
+        <Navbar />
+        <div className="flex-1 w-full">{children}</div>
+        <Footer />
+      </body>
+    </html>
+  );
 }

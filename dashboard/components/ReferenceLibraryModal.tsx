@@ -1,6 +1,7 @@
 'use client';
+
 import { useEffect, useState } from 'react';
-import { FolderOpen, Upload, Plus, Trash2, FileText, X, AlertCircle, Loader2, Check } from 'lucide-react';
+import { FolderOpen, Upload, Plus, Trash2, FileText, X, AlertCircle, Loader2 } from 'lucide-react';
 import {
   fetchReferences,
   createReference,
@@ -115,42 +116,46 @@ export default function ReferenceLibraryModal({ isOpen, onClose, onReferencesCha
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-      <div className="relative flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl border border-outline bg-white shadow-xl">
-        <div className="flex items-center justify-between border-b border-outline px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-brand">
-              <FolderOpen size={18} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-ink/60 p-4 backdrop-blur-sm">
+      <div className="relative flex max-h-[88vh] w-full max-w-2xl flex-col rounded-3xl border border-black/10 bg-white shadow-elevated">
+        <div className="flex items-center justify-between border-b border-black/5 px-6 sm:px-8 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-ai-blue/10 text-ai-blue">
+              <FolderOpen size={20} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-ink">Authorized Reference Library</h2>
-              <p className="text-xs text-muted">Manage documents used for internal similarity checks</p>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-ai-blue font-bold block">
+                CORPUS REPOSITORY
+              </span>
+              <h2 className="text-lg font-bold font-display text-brand-ink">
+                Authorized Reference Library
+              </h2>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-muted hover:bg-slate-100 hover:text-ink"
+            className="rounded-xl p-2 text-brand-mist hover:bg-brand-parchment hover:text-brand-ink transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {error && (
-          <div className="mx-6 mt-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700">
+          <div className="mx-6 sm:mx-8 mt-4 flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 font-medium">
             <AlertCircle size={15} />
             <span>{error}</span>
           </div>
         )}
 
-        <div className="flex border-b border-outline px-6 pt-3">
+        <div className="flex border-b border-black/5 px-6 sm:px-8 pt-3">
           <button
             type="button"
             onClick={() => setActiveTab('list')}
-            className={`border-b-2 pb-2.5 text-xs font-semibold transition-colors ${
+            className={`border-b-2 pb-3 text-xs sm:text-sm font-semibold transition-colors ${
               activeTab === 'list'
-                ? 'border-brand text-brand'
-                : 'border-transparent text-muted hover:text-ink'
+                ? 'border-ai-orange text-ai-orange'
+                : 'border-transparent text-brand-mist hover:text-brand-ink'
             }`}
           >
             Document Collection ({docs.length})
@@ -158,68 +163,68 @@ export default function ReferenceLibraryModal({ isOpen, onClose, onReferencesCha
           <button
             type="button"
             onClick={() => setActiveTab('upload')}
-            className={`ml-6 border-b-2 pb-2.5 text-xs font-semibold transition-colors ${
+            className={`ml-6 border-b-2 pb-3 text-xs sm:text-sm font-semibold transition-colors ${
               activeTab === 'upload'
-                ? 'border-brand text-brand'
-                : 'border-transparent text-muted hover:text-ink'
+                ? 'border-ai-orange text-ai-orange'
+                : 'border-transparent text-brand-mist hover:text-brand-ink'
             }`}
           >
-            Upload File (TXT, MD, PDF)
+            Upload File (.txt, .md, .pdf)
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('paste')}
-            className={`ml-6 border-b-2 pb-2.5 text-xs font-semibold transition-colors ${
+            className={`ml-6 border-b-2 pb-3 text-xs sm:text-sm font-semibold transition-colors ${
               activeTab === 'paste'
-                ? 'border-brand text-brand'
-                : 'border-transparent text-muted hover:text-ink'
+                ? 'border-ai-orange text-ai-orange'
+                : 'border-transparent text-brand-mist hover:text-brand-ink'
             }`}
           >
             Paste Text
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 sm:p-8">
           {activeTab === 'list' && (
             <div>
               {loading ? (
-                <div className="flex h-40 items-center justify-center text-xs text-muted">
-                  <Loader2 size={16} className="mr-2 animate-spin text-brand" /> Loading reference documents...
+                <div className="flex h-44 items-center justify-center text-xs font-mono text-brand-mist">
+                  <Loader2 size={16} className="mr-2 animate-spin text-ai-orange" /> Querying corpus library...
                 </div>
               ) : docs.length === 0 ? (
-                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 py-12 text-center">
-                  <FileText size={32} className="text-slate-400" />
-                  <h3 className="mt-2 text-sm font-semibold text-ink">No reference documents yet</h3>
-                  <p className="mt-1 max-w-sm text-xs text-muted">
-                    Upload TXT, Markdown, or PDF articles you have permission to compare against.
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/15 py-12 text-center bg-brand-parchment/30">
+                  <FileText size={36} className="text-brand-mist/50" />
+                  <h3 className="mt-3 text-sm font-bold font-display text-brand-ink">No reference documents yet</h3>
+                  <p className="mt-1 max-w-sm text-xs text-brand-mist font-sans">
+                    Upload TXT, Markdown, or PDF articles to build an authorized similarity benchmark.
                   </p>
-                  <div className="mt-4 flex gap-2">
+                  <div className="mt-5 flex gap-2.5">
                     <button
                       type="button"
                       onClick={() => setActiveTab('upload')}
-                      className="inline-flex items-center gap-1 rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-600"
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-ai-blue hover:bg-ai-blue-sky px-4 py-2 text-xs font-semibold text-white shadow-blue transition-all"
                     >
-                      <Upload size={13} /> Upload document
+                      <Upload size={13} /> Upload Document
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveTab('paste')}
-                      className="inline-flex items-center gap-1 rounded-lg border border-outline px-3 py-1.5 text-xs font-semibold text-ink hover:bg-slate-50"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-black/10 bg-white px-4 py-2 text-xs font-semibold text-brand-ink hover:bg-brand-parchment transition-all"
                     >
-                      <Plus size={13} /> Paste text
+                      <Plus size={13} /> Paste Text
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100 rounded-xl border border-outline">
+                <div className="divide-y divide-black/5 rounded-2xl border border-black/5 overflow-hidden">
                   {docs.map((doc) => (
                     <div
                       key={doc.doc_id}
-                      className="flex items-center justify-between p-3.5 hover:bg-slate-50/70"
+                      className="flex items-center justify-between p-4 hover:bg-brand-parchment/50 transition-colors"
                     >
                       <div className="min-w-0 flex-1">
-                        <h4 className="truncate text-xs font-semibold text-ink">{doc.title}</h4>
-                        <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted">
+                        <h4 className="truncate text-xs sm:text-sm font-bold text-brand-ink">{doc.title}</h4>
+                        <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-mono text-brand-mist">
                           <span>{doc.word_count.toLocaleString()} words</span>
                           <span>·</span>
                           <span>Added {new Date(doc.created_at).toLocaleDateString()}</span>
@@ -230,7 +235,7 @@ export default function ReferenceLibraryModal({ isOpen, onClose, onReferencesCha
                                 href={doc.source_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="truncate text-brand hover:underline max-w-[200px]"
+                                className="truncate text-ai-blue hover:underline max-w-[200px]"
                               >
                                 {doc.source_url}
                               </a>
@@ -241,10 +246,10 @@ export default function ReferenceLibraryModal({ isOpen, onClose, onReferencesCha
                       <button
                         type="button"
                         onClick={() => handleDelete(doc.doc_id)}
-                        className="ml-3 rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
+                        className="ml-3 rounded-xl p-2 text-brand-mist hover:bg-rose-50 hover:text-rose-600 transition-colors"
                         title="Delete reference document"
                       >
-                        <Trash2 size={15} />
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   ))}
@@ -256,41 +261,49 @@ export default function ReferenceLibraryModal({ isOpen, onClose, onReferencesCha
           {activeTab === 'upload' && (
             <form onSubmit={handleFileUpload} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-ink">Select Document File</label>
+                <label className="block text-xs font-bold font-mono uppercase text-brand-ink mb-1">
+                  Select Document File
+                </label>
                 <input
                   type="file"
                   accept=".txt,.md,.markdown,.pdf"
                   onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
-                  className="mt-1 block w-full rounded-lg border border-outline p-2 text-xs file:mr-3 file:rounded-md file:border-0 file:bg-blue-50 file:px-2.5 file:py-1 file:text-xs file:font-semibold file:text-brand hover:file:bg-blue-100"
+                  className="mt-1 block w-full rounded-xl border border-black/10 bg-brand-parchment/40 p-2.5 text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-ai-blue/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-ai-blue hover:file:bg-ai-blue/20"
                 />
-                <p className="mt-1 text-[11px] text-muted">Supported: Plain text (.txt), Markdown (.md), PDF (.pdf). Maximum 10MB.</p>
+                <p className="mt-1.5 text-[11px] font-mono text-brand-mist">
+                  Supported: Plain text (.txt), Markdown (.md), PDF (.pdf). Maximum 10MB.
+                </p>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink">Title (Optional)</label>
+                <label className="block text-xs font-bold font-mono uppercase text-brand-ink mb-1">
+                  Title (Optional)
+                </label>
                 <input
                   type="text"
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
-                  placeholder="e.g. Industry Whitepaper 2026"
-                  className="mt-1 block w-full rounded-lg border border-outline px-3 py-2 text-xs focus:border-brand focus:outline-none"
+                  placeholder="e.g. Enterprise AI Strategy Whitepaper"
+                  className="mt-1 block w-full rounded-xl border border-black/10 px-3.5 py-2.5 text-xs text-brand-ink focus:border-ai-orange focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink">Source URL (Optional)</label>
+                <label className="block text-xs font-bold font-mono uppercase text-brand-ink mb-1">
+                  Source URL (Optional)
+                </label>
                 <input
                   type="url"
                   value={uploadUrl}
                   onChange={(e) => setUploadUrl(e.target.value)}
                   placeholder="https://example.com/reference"
-                  className="mt-1 block w-full rounded-lg border border-outline px-3 py-2 text-xs focus:border-brand focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-black/10 px-3.5 py-2.5 text-xs text-brand-ink focus:border-ai-orange focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
                 disabled={submitting || !uploadFile}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-blue-600 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl bg-ai-orange hover:bg-ai-orange-warm px-5 py-2.5 text-xs font-display font-bold text-white shadow-ai hover:-translate-y-0.5 transition-all disabled:opacity-50"
               >
-                {submitting ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
+                {submitting ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
                 Add to Reference Library
               </button>
             </form>
@@ -299,55 +312,61 @@ export default function ReferenceLibraryModal({ isOpen, onClose, onReferencesCha
           {activeTab === 'paste' && (
             <form onSubmit={handlePasteSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-ink">Document Title</label>
+                <label className="block text-xs font-bold font-mono uppercase text-brand-ink mb-1">
+                  Document Title
+                </label>
                 <input
                   type="text"
                   required
                   value={pasteTitle}
                   onChange={(e) => setPasteTitle(e.target.value)}
                   placeholder="e.g. Chatbot Architecture Guidelines"
-                  className="mt-1 block w-full rounded-lg border border-outline px-3 py-2 text-xs focus:border-brand focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-black/10 px-3.5 py-2.5 text-xs text-brand-ink focus:border-ai-orange focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink">Source URL (Optional)</label>
+                <label className="block text-xs font-bold font-mono uppercase text-brand-ink mb-1">
+                  Source URL (Optional)
+                </label>
                 <input
                   type="url"
                   value={pasteUrl}
                   onChange={(e) => setPasteUrl(e.target.value)}
                   placeholder="https://example.com/guidelines"
-                  className="mt-1 block w-full rounded-lg border border-outline px-3 py-2 text-xs focus:border-brand focus:outline-none"
+                  className="mt-1 block w-full rounded-xl border border-black/10 px-3.5 py-2.5 text-xs text-brand-ink focus:border-ai-orange focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink">Document Content</label>
+                <label className="block text-xs font-bold font-mono uppercase text-brand-ink mb-1">
+                  Document Content
+                </label>
                 <textarea
                   required
                   rows={6}
                   value={pasteContent}
                   onChange={(e) => setPasteContent(e.target.value)}
                   placeholder="Paste reference text or markdown here..."
-                  className="mt-1 block w-full rounded-lg border border-outline p-3 text-xs focus:border-brand focus:outline-none font-mono"
+                  className="mt-1 block w-full rounded-xl border border-black/10 p-3.5 text-xs font-mono text-brand-ink focus:border-ai-orange focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
                 disabled={submitting || !pasteTitle || !pasteContent}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-blue-600 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl bg-ai-orange hover:bg-ai-orange-warm px-5 py-2.5 text-xs font-display font-bold text-white shadow-ai hover:-translate-y-0.5 transition-all disabled:opacity-50"
               >
-                {submitting ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
+                {submitting ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
                 Save Reference Document
               </button>
             </form>
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-outline px-6 py-3 bg-slate-50/50 text-[11px] text-muted rounded-b-2xl">
-          <span>Upload only authorized reference documents that you have permission to analyze.</span>
+        <div className="flex items-center justify-between border-t border-black/5 px-6 sm:px-8 py-3.5 bg-brand-parchment/60 text-[11px] font-mono text-brand-mist rounded-b-3xl">
+          <span>Corpus restricted strictly to authorized internal documents.</span>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-outline px-3 py-1.5 text-xs font-semibold text-ink hover:bg-slate-100"
+            className="rounded-xl border border-black/10 bg-white px-4 py-1.5 text-xs font-semibold text-brand-ink hover:bg-brand-parchment transition-colors"
           >
             Done
           </button>

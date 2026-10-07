@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -12,6 +13,9 @@ import {
   FolderOpen,
   Download,
   FileText,
+  Sparkles,
+  Layers,
+  ShieldCheck,
 } from 'lucide-react';
 import JsonEditorPanel from '@/components/JsonEditorPanel';
 import InfographicModal from '@/components/InfographicModal';
@@ -76,7 +80,6 @@ export default function ResultsPage() {
         setPlagiarismError(statusRes.error_message || 'Plagiarism check failed.');
         setPlagiarismPolling(false);
       } else {
-        // Still queued or processing
         setPlagiarismPolling(true);
         setTimeout(() => void pollPlagiarism(jobId), 1500);
       }
@@ -98,9 +101,7 @@ export default function ResultsPage() {
         if (data.status === 'queued' || data.status === 'processing') {
           timer = setTimeout(refresh, 1300);
         } else if (data.status === 'completed') {
-          // Check if there is an existing plagiarism report
           void pollPlagiarism(params.jobId);
-          // Fetch AI detection metrics
           setAiDetectionLoading(true);
           void getAiDetection(params.jobId)
             .then((det) => {
@@ -146,27 +147,37 @@ export default function ResultsPage() {
   const humanizedText = result?.humanized_text || '';
 
   return (
-    <main className="mx-auto max-w-[1480px] px-5 pb-16 pt-8 sm:px-8">
-      {/* Top Breadcrumb & Status */}
-      <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+    <main className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8 pb-20 pt-6">
+      {/* Top Breadcrumb & Status Navigation */}
+      <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-black/5">
         <div>
           <Link
             href="/"
-            className="mb-4 inline-flex items-center gap-2 text-xs font-semibold text-muted hover:text-brand"
+            className="mb-3 inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-brand-mist hover:text-ai-orange transition-colors"
           >
-            <ArrowLeft size={14} /> Back to input
+            <ArrowLeft size={14} /> Back to Studio Workbench
           </Link>
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-[28px]">Content Validator</h1>
-          <p className="mt-1.5 text-sm text-muted">Your source and processed result, side by side.</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-tight text-brand-ink uppercase">
+              Content Validation Studio
+            </h1>
+            <span className="font-mono text-[11px] font-bold px-2.5 py-1 rounded-md bg-white border border-black/5 text-brand-mist shadow-2xs">
+              ID: {params.jobId.slice(0, 8)}...
+            </span>
+          </div>
+          <p className="mt-1.5 text-sm text-brand-mist font-sans">
+            Side-by-side original source and neural humanized copy with statistical validation.
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Word Count Indicator (Max 1500) */}
+        {/* Action Controls Toolbar */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Word Count Indicator */}
           {result && (
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-black/5 bg-white px-4 py-2 text-xs font-mono shadow-xs">
               <span className="font-bold text-emerald-600">{result.audit.final_word_count}</span>
-              <span className="text-slate-400">/ 1,500 words max</span>
-            </span>
+              <span className="text-brand-mist">/ 1,500 words target</span>
+            </div>
           )}
 
           {/* Download Word Document (.docx) */}
@@ -174,7 +185,7 @@ export default function ResultsPage() {
             <a
               href={getDocxExportUrl(params.jobId)}
               download
-              className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-brand shadow-sm hover:bg-blue-100 transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl bg-ai-blue hover:bg-ai-blue-sky text-white px-4 py-2 text-xs font-semibold shadow-blue hover:-translate-y-0.5 transition-all duration-200"
               title="Download formatted Word Document (.docx)"
             >
               <FileText size={14} /> Download Word (.docx)
@@ -186,9 +197,9 @@ export default function ResultsPage() {
             <a
               href={getMarkdownExportUrl(params.jobId)}
               download
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white hover:bg-brand-parchment text-brand-ink px-4 py-2 text-xs font-semibold shadow-xs hover:-translate-y-0.5 transition-all duration-200"
             >
-              <Download size={14} /> Export Markdown
+              <Download size={14} /> Markdown (.md)
             </a>
           )}
 
@@ -196,10 +207,10 @@ export default function ResultsPage() {
           <button
             type="button"
             onClick={() => setShowLibraryModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-outline bg-white px-3 py-2 text-xs font-semibold text-ink hover:bg-slate-50 shadow-sm"
+            className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white hover:bg-brand-parchment text-brand-ink px-4 py-2 text-xs font-semibold shadow-xs hover:-translate-y-0.5 transition-all duration-200"
           >
-            <FolderOpen size={14} className="text-muted" />
-            Reference Library ({referenceCount})
+            <FolderOpen size={14} className="text-ai-blue" />
+            <span>Library ({referenceCount})</span>
           </button>
 
           {/* Primary Action: Check Plagiarism */}
@@ -207,77 +218,80 @@ export default function ResultsPage() {
             type="button"
             disabled={state !== 'completed' || plagiarismPolling}
             onClick={() => setShowPlagiarismModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-600 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-ai-orange hover:bg-ai-orange-warm text-white px-5 py-2 text-xs font-display font-bold shadow-ai hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {plagiarismPolling ? (
               <>
-                <Loader2 size={14} className="animate-spin" /> Checking Similarity...
+                <Loader2 size={14} className="animate-spin" /> Verifying Similarity...
               </>
             ) : (
               <>
-                <SearchCheck size={14} /> Check Plagiarism
+                <SearchCheck size={14} /> Check Similarity
               </>
             )}
           </button>
 
+          {/* State Badge */}
           <span
-            className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-semibold ${
+            className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-mono font-bold ${
               state === 'completed'
-                ? 'border-green-200 bg-green-50 text-green-700'
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                 : state === 'failed'
-                ? 'border-red-200 bg-red-50 text-red-700'
-                : 'border-blue-100 bg-blue-50 text-brand'
+                ? 'border-rose-200 bg-rose-50 text-rose-700'
+                : 'border-ai-blue/30 bg-ai-blue/10 text-ai-blue'
             }`}
           >
             {state === 'completed' ? (
-              <CheckCircle2 size={15} />
+              <CheckCircle2 size={14} />
             ) : state === 'failed' ? (
-              <AlertCircle size={15} />
+              <AlertCircle size={14} />
             ) : (
-              <Loader2 size={15} className="animate-spin" />
+              <Loader2 size={14} className="animate-spin text-ai-blue" />
             )}
             {state === 'completed'
-              ? 'Processing complete'
+              ? 'PIPELINE COMPLETE'
               : state === 'failed'
-              ? 'Processing failed'
-              : 'Processing'}
+              ? 'FAILED'
+              : 'PROCESSING REWRITE'}
           </span>
         </div>
       </div>
 
+      {/* Errors */}
       {error && (
-        <div role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div role="alert" className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 font-medium">
           {error}
         </div>
       )}
       {job?.error_message && (
-        <div role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div role="alert" className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 font-medium">
           {job.error_message}
         </div>
       )}
       {plagiarismError && (
-        <div role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          <strong>Plagiarism Checker:</strong> {plagiarismError}
+        <div role="alert" className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 font-medium">
+          <strong>Similarity Engine Alert:</strong> {plagiarismError}
         </div>
       )}
 
-      {/* AI Detection Comparison Widget */}
+      {/* AI Detection Benchmark Comparison Widget */}
       {aiDetection && (
         <AIDetectionComparison data={aiDetection} loading={aiDetectionLoading} />
       )}
 
-      {/* Dual Monaco JSON Editors */}
-      <div className="grid grid-cols-1 items-stretch gap-5 xl:grid-cols-2">
+      {/* Dual Monaco JSON / Text Editors */}
+      <div className="grid grid-cols-1 items-stretch gap-6 xl:grid-cols-2 mb-8">
         <JsonEditorPanel
-          title="Original Content"
-          subtitle="Your text, preserved exactly"
+          title="Source Article Draft"
+          subtitle="Original content submitted for humanization"
           payload={job?.original_content || null}
           wordCount={result?.audit.original_word_count ?? null}
           status={job ? 'completed' : 'waiting'}
+          plainText={job?.original_content?.original_text}
         />
         <JsonEditorPanel
-          title="Humanized Content"
-          subtitle="Processed article, infographic specs and audit"
+          title="Humanized Publication Prose"
+          subtitle="Two-pass semantic rewrite, infographic specs & audit metadata"
           payload={result || null}
           wordCount={result?.audit.final_word_count ?? null}
           status={state === 'queued' ? 'waiting' : state}
@@ -287,56 +301,83 @@ export default function ResultsPage() {
 
       {/* Editorial Audit Panel */}
       {result && (
-        <div className="mt-5 rounded-[18px] border border-outline bg-white p-5 shadow-soft">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="rounded-[2rem] border border-black/10 bg-white p-6 sm:p-8 shadow-card mb-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-black/5">
             <div>
-              <h2 className="text-sm font-semibold">Editorial audit</h2>
-              <p className="mt-1 text-xs text-muted">
-                {result.audit.final_word_count.toLocaleString()} words · {result.audit.word_count_ratio}% of original ·{' '}
-                {result.audit.applied_rules.length} rule types applied
+              <div className="inline-flex items-center gap-2 mb-1">
+                <ShieldCheck size={16} className="text-ai-blue" />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-ai-blue font-bold">
+                  03 — EDITORIAL COMPLIANCE
+                </span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-bold font-display text-brand-ink">
+                Editorial Compliance &amp; Rulebook Audit
+              </h2>
+              <p className="mt-1 text-xs sm:text-sm text-brand-mist font-sans">
+                {result.audit.final_word_count.toLocaleString()} words · {result.audit.word_count_ratio}% of source ·{' '}
+                {result.audit.applied_rules.length} rule categories verified
               </p>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="flex items-center gap-3">
               <span
-                className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
+                className={`rounded-full px-3.5 py-1.5 text-xs font-mono font-bold border ${
                   result.audit.validation_status === 'passed'
-                    ? 'bg-green-50 text-green-700'
-                    : 'bg-amber-50 text-amber-700'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                    : 'border-amber-200 bg-amber-50 text-amber-800'
                 }`}
               >
-                {result.audit.validation_status === 'passed' ? 'Automated checks passed' : 'Review required'}
+                {result.audit.validation_status === 'passed' ? '✓ AUTOMATED RULES PASSED' : 'EDITORIAL REVIEW REQUIRED'}
               </span>
+
               {result.infographics.length > 0 && (
                 <button
                   type="button"
                   onClick={() => setShowInfographics(true)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-outline px-3 py-2 text-xs font-semibold hover:bg-slate-50"
+                  className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-brand-parchment hover:bg-white px-3.5 py-2 text-xs font-semibold text-brand-ink transition-all shadow-2xs"
                 >
-                  <ImageIcon size={14} /> Infographics ({result.infographics.length})
+                  <ImageIcon size={15} className="text-ai-orange" />
+                  <span>Infographics ({result.infographics.length})</span>
                 </button>
               )}
             </div>
           </div>
-          <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2">
+
+          {/* Review Flags Grid */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
             {result.audit.review_flags.map((flag, index) => (
               <div
                 key={`${flag.code}:${index}`}
-                className={`rounded-lg border px-3 py-2 text-xs leading-5 ${
+                className={`rounded-xl border p-4 text-xs leading-relaxed font-sans transition-all ${
                   flag.severity === 'critical'
-                    ? 'border-red-200 bg-red-50 text-red-800'
+                    ? 'border-rose-200 bg-rose-50/60 text-rose-900'
                     : flag.severity === 'warning'
-                    ? 'border-amber-200 bg-amber-50 text-amber-900'
-                    : 'border-outline bg-slate-50 text-slate-600'
+                    ? 'border-amber-200 bg-amber-50/60 text-amber-900'
+                    : 'border-black/5 bg-brand-parchment/60 text-brand-mist'
                 }`}
               >
-                <span className="font-semibold">{flag.code}: </span>
-                {flag.message}
+                <div className="font-mono font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      flag.severity === 'critical'
+                        ? 'bg-rose-500'
+                        : flag.severity === 'warning'
+                        ? 'bg-amber-500'
+                        : 'bg-ai-blue'
+                    }`}
+                  />
+                  {flag.code}
+                </div>
+                <div>{flag.message}</div>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-xs text-muted">
-            Plagiarism check: {result.audit.originality_check}. AI detection: {result.audit.ai_detection_check}. The local engine does not implement every editorial rule.
-          </p>
+
+          <div className="mt-5 pt-4 border-t border-black/5 flex flex-wrap items-center justify-between text-xs font-mono text-brand-mist">
+            <div>Plagiarism Check: {result.audit.originality_check}</div>
+            <div>AI Detection Status: {result.audit.ai_detection_check}</div>
+            <div className="text-ai-orange font-bold">TECHMARKETING.AI AUDIT LAYER</div>
+          </div>
         </div>
       )}
 

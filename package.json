@@ -1,0 +1,12 @@
+{
+  "name": "content-humanizer-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "TechMarketing.AI Content Humanizer Studio & Editorial Engine",
+  "scripts": {
+    "dev": "npm --prefix dashboard run dev",
+    "build": "npm --prefix dashboard run build",
+    "start": "npm --prefix dashboard start",
+    "typecheck": "npm --prefix dashboard run typecheck"
+  }
+}

@@ -100,53 +100,10 @@ def edit_prose(text: str) -> tuple[str, set[str]]:
 
 
 def transform_local(markdown: str) -> tuple[str, list[str]]:
-    """Never rewrite source material that cannot be safely segmented."""
-    lines = markdown.splitlines(keepends=True)
-    transformed = []
-    applied: set[str] = set()
-    in_fence = False
-    fence_marker = None
-    in_frontmatter = bool(lines and lines[0].strip() == '---')
-    frontmatter_started = False
-    bolded = 0
-    for line in lines:
-        stripped = line.strip()
-        if in_frontmatter:
-            transformed.append(line)
-            if frontmatter_started and stripped == '---':
-                in_frontmatter = False
-            frontmatter_started = True
-            continue
-        fence = re.match(r'^\s*(`{3,}|~{3,})', line)
-        if fence:
-            marker = fence.group(1)[0]
-            if not in_fence:
-                in_fence, fence_marker = True, marker
-            elif marker == fence_marker:
-                in_fence, fence_marker = False, None
-            transformed.append(line)
-            continue
-        # Conservatively keep code, tables, reference definitions, headings, links,
-        # blockquotes, HTML and heavily structured text exactly as provided.
-        if (in_fence or not stripped or line.startswith(('    ', '\t')) or
-            re.match(r'^\s*(?:#{1,6}\s|\||>|<|\[[^\]]+\]:)', line) or
-            '|' in line or re.search(r'\[[^\]]+\]\(', line) or
-            re.match(r'^\s*(?:[-*+] |\d+[.)] )', line)):
-            transformed.append(line)
-            continue
-        body = line.rstrip('\r\n')
-        ending = line[len(body):]
-        revised, rules = edit_prose(body)
-        applied.update(rules)
-        if '**' not in revised and bolded < 4:
-            for pattern in BOLD_PATTERNS:
-                if pattern.search(revised):
-                    revised = pattern.sub(lambda match: '**' + match.group(1) + '**', revised, count=1)
-                    applied.add('R096')
-                    bolded += 1
-                    break
-        transformed.append(revised + ending)
-    return ''.join(transformed), sorted(applied)
+    """Transform markdown prose using semantic humanization engine implementing 100 editorial rules."""
+    from .semantic_engine import transform_semantic
+    return transform_semantic(markdown)
+
 
 
 def infographic_specs(markdown: str) -> list[InfographicSpec]:

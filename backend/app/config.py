@@ -16,7 +16,7 @@ MAX_CHARACTERS = int(os.getenv('HUMANIZER_MAX_CHARACTERS', '150000'))
 DEFAULT_MODE = os.getenv('HUMANIZER_DEFAULT_MODE', 'local')
 API_KEY = os.getenv('HUMANIZE_AI_TEXT_API_KEY', '')
 BASE_URL = os.getenv('HUMANIZE_AI_TEXT_BASE_URL', 'https://api.humanize-ai-text.ai/v1')
-ALLOWED_ORIGINS = os.getenv('HUMANIZER_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+ALLOWED_ORIGINS = [orig.strip() for orig in os.getenv('HUMANIZER_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000').split(',') if orig.strip()]
 
 # OpenAI Semantic Humanizer Configuration
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '').strip()
